@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile, Region, Categorie
+from .models import UserProfile, Region, Categorie, Contact
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -123,3 +123,40 @@ class CustomAuthenticationForm(forms.Form):
             'placeholder': 'Mot de passe'
         })
     )
+
+
+class ContactForm(forms.ModelForm):
+    """Formulaire de contact utilisant ModelForm"""
+    
+    class Meta:
+        model = Contact
+        fields = ['nom', 'email', 'telephone', 'sujet', 'message']
+        widgets = {
+            'nom': forms.TextInput(attrs={
+                'class': 'input w-full',
+                'placeholder': 'Votre nom complet'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'input w-full',
+                'placeholder': 'votre.email@exemple.com'
+            }),
+            'telephone': forms.TextInput(attrs={
+                'class': 'input w-full',
+                'placeholder': '+224 XX XX XX XX (optionnel)'
+            }),
+            'sujet': forms.Select(attrs={
+                'class': 'input w-full'
+            }),
+            'message': forms.Textarea(attrs={
+                'class': 'input w-full',
+                'rows': 5,
+                'placeholder': 'Décrivez votre question ou problème...'
+            })
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Rendre tous les champs requis sauf téléphone
+        for field_name, field in self.fields.items():
+            if field_name != 'telephone':
+                field.required = True

@@ -98,6 +98,9 @@
                     <a href="{% url 'bourses:list' %}" class="nav-link {% if request.resolver_match.url_name == 'list' and request.resolver_match.namespace == 'bourses' %}active{% endif %}">
                         Bourses
                     </a>
+                    <a href="{% url 'core:contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' and request.resolver_match.namespace == 'core' %}active{% endif %}">
+                        Contact
+                    </a>
                     {% if user.is_authenticated %}
                         <div class="flex items-center space-x-4">
                             <span class="text-sm text-logo-white">Bonjour, {{ user.first_name|default:user.username }}</span>
@@ -132,6 +135,9 @@
                     </a>
                     <a href="{% url 'bourses:list' %}" class="nav-link nav-link-mobile py-2 {% if request.resolver_match.url_name == 'list' and request.resolver_match.namespace == 'bourses' %}active{% endif %}">
                         Bourses
+                    </a>
+                    <a href="{% url 'core:contact' %}" class="nav-link nav-link-mobile py-2 {% if request.resolver_match.url_name == 'contact' and request.resolver_match.namespace == 'core' %}active{% endif %}">
+                        Contact
                     </a>
                     {% if user.is_authenticated %}
                         <a href="{% url 'core:profile' %}" class="nav-link nav-link-mobile py-2 {% if request.resolver_match.url_name == 'profile' and request.resolver_match.namespace == 'core' %}active{% endif %}">
@@ -193,7 +199,7 @@
                     <h3 class="font-semibold mb-4">Support</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
                         <li><a href="#" class="hover:text-green-500 transition-colors">Aide</a></li>
-                        <li><a href="#" class="hover:text-green-500 transition-colors">Contact</a></li>
+                        <li><a href="{% url 'core:contact' %}" class="hover:text-green-500 transition-colors">Contact</a></li>
                         <li><a href="#" class="hover:text-green-500 transition-colors">FAQ</a></li>
                     </ul>
                 </div>

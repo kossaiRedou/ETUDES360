@@ -7,8 +7,8 @@ from django.db.models import Count
 from concours.models import Concours
 from formations.models import Formation
 from bourses.models import Bourse
-from .models import UserProfile, Region, Categorie
-from .forms import CustomUserCreationForm, UserProfileForm, CustomAuthenticationForm
+from .models import UserProfile, Region, Categorie, Contact
+from .forms import CustomUserCreationForm, UserProfileForm, CustomAuthenticationForm, ContactForm
 
 # Create your views here.
 
@@ -163,3 +163,41 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Déconnexion réussie!')
     return redirect('core:home')
+
+def contact_view(request):
+    """Vue de contact utilisant Django au maximum"""
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Django sauvegarde automatiquement avec ModelForm
+            contact = form.save()
+            messages.success(
+                request, 
+                f'Merci {contact.nom} ! Votre message a été envoyé avec succès. '
+                f'Nous vous répondrons dans les plus brefs délais à {contact.email}.'
+            )
+            return redirect('core:contact')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = ContactForm()
+        # Pré-remplir avec les infos de l'utilisateur connecté
+        if request.user.is_authenticated:
+            form.initial = {
+                'nom': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username,
+                'email': request.user.email,
+            }
+    
+    # Statistiques pour la page contact
+    stats = {
+        'messages_total': Contact.objects.count(),
+        'messages_resolus': Contact.objects.filter(statut='resolu').count(),
+        'temps_reponse_moyen': '24h',  # Vous pouvez calculer cela dynamiquement
+    }
+    
+    context = {
+        'form': form,
+        'stats': stats,
+    }
+    
+    return render(request, 'core/contact.html', context)
