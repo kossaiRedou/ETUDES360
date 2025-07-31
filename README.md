@@ -130,14 +130,14 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 👥 Auteurs
 
-- **Développeur principal** : [Votre nom]
+- **Développeur principal** : GABITHEX
 - **Design** : Inspiré du logo Etudes360
 
 ## 🆘 Support
 
 Pour toute question ou problème :
 - Ouvrir une issue sur GitHub
-- Contacter : [votre.email@exemple.com]
+- Contacter : aliou@gabithex.fr
 
 ---
 
