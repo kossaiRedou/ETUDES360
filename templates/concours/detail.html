@@ -1,0 +1,96 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ concours.titre }} - Etudes360{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{% url 'concours:list' %}" class="flex items-center text-green-600 hover:text-green-700 transition-colors mr-4">
+            <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
+            Retour aux concours
+        </a>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="badge badge-default">{{ concours.categorie.nom }}</span>
+                        <span class="text-sm {% if concours.est_ouvert %}text-green-600{% else %}text-red-600{% endif %} font-medium">
+                            {% if concours.est_ouvert %}Ouvert{% else %}Fermé{% endif %}
+                        </span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ concours.titre }}</h1>
+                    <div class="flex items-center text-gray-600 text-sm space-x-4">
+                        <span><i data-lucide="map-pin" class="h-4 w-4 inline mr-1"></i>{{ concours.localisation }}</span>
+                        <span><i data-lucide="calendar" class="h-4 w-4 inline mr-1"></i>{{ concours.deadline|date:"d F Y" }}</span>
+                        <span><i data-lucide="users" class="h-4 w-4 inline mr-1"></i>{{ concours.nombre_places }}</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="prose max-w-none">
+                        <h3>Description</h3>
+                        <p>{{ concours.description|linebreaks }}</p>
+                        
+                        <h3>Prérequis</h3>
+                        <p>{{ concours.prerequis|linebreaks }}</p>
+                        
+                        {% if concours.documents_requis %}
+                        <h3>Documents requis</h3>
+                        <p>{{ concours.documents_requis|linebreaks }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-1">
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h3 class="card-title">Informations clés</h3>
+                </div>
+                <div class="card-content space-y-4">
+                    <div>
+                        <strong>Niveau:</strong> {{ concours.get_niveau_display }}
+                    </div>
+                    <div>
+                        <strong>Statut:</strong> {{ concours.get_statut_display }}
+                    </div>
+                    {% if concours.organisme %}
+                    <div>
+                        <strong>Organisme:</strong> {{ concours.organisme }}
+                    </div>
+                    {% endif %}
+                    {% if concours.frais_inscription %}
+                    <div>
+                        <strong>Frais d'inscription:</strong> {{ concours.frais_inscription }}
+                    </div>
+                    {% endif %}
+                    {% if concours.est_ouvert %}
+                    <div class="text-green-600 font-medium">
+                        <i data-lucide="clock" class="h-4 w-4 inline mr-1"></i>
+                        {{ concours.jours_restants }} jours restants
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if concours.lien_inscription %}
+            <a href="{{ concours.lien_inscription }}" target="_blank" class="btn btn-primary w-full mb-6">
+                <i data-lucide="external-link" class="h-4 w-4 mr-2"></i>
+                S'inscrire maintenant
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

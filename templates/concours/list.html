@@ -1,0 +1,131 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Concours - Etudes360{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Concours disponibles</h1>
+            <p class="text-gray-600">Découvrez les concours ouverts en Guinée et à l'international</p>
+        </div>
+        <a href="{% url 'core:home' %}" class="flex items-center text-green-600 hover:text-green-700 transition-colors">
+            <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
+            Retour à l'accueil
+        </a>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="bg-white p-6 rounded-lg shadow-sm border mb-8">
+        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
+                <input 
+                    type="text" 
+                    name="search" 
+                    value="{{ search_term }}" 
+                    placeholder="Titre, description..."
+                    class="input w-full"
+                />
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+                <select name="category" class="input w-full">
+                    <option value="all">Toutes les catégories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.nom }}" {% if selected_category == category.nom %}selected{% endif %}>
+                        {{ category.nom }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Niveau</label>
+                <select name="level" class="input w-full">
+                    <option value="all">Tous les niveaux</option>
+                    {% for value, display in niveau_choices %}
+                    <option value="{{ value }}" {% if selected_level == value %}selected{% endif %}>
+                        {{ display }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button type="submit" class="btn btn-primary w-full">
+                    <i data-lucide="search" class="h-4 w-4 mr-2"></i>
+                    Rechercher
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for concours in concours_list %}
+        <div class="card hover:shadow-lg transition-shadow">
+            <div class="card-header">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="badge badge-default">{{ concours.categorie.nom }}</span>
+                    <span class="text-sm {% if concours.est_ouvert %}text-green-600{% else %}text-red-600{% endif %} font-medium">
+                        {% if concours.est_ouvert %}Ouvert{% else %}Fermé{% endif %}
+                    </span>
+                </div>
+                <h3 class="card-title text-lg">{{ concours.titre }}</h3>
+                <p class="card-description text-sm text-gray-600 mb-2">{{ concours.localisation }}</p>
+            </div>
+            <div class="card-content">
+                <p class="text-gray-700 text-sm mb-4">
+                    {{ concours.description|truncatewords:20 }}
+                </p>
+                <div class="flex items-center justify-between text-sm text-gray-600 mb-4">
+                    <span><i data-lucide="calendar" class="h-4 w-4 inline mr-1"></i>{{ concours.deadline|date:"d M Y" }}</span>
+                    <span><i data-lucide="users" class="h-4 w-4 inline mr-1"></i>{{ concours.nombre_places }}</span>
+                </div>
+                <a href="{% url 'concours:detail' concours.pk %}" class="btn btn-secondary w-full">
+                    Voir les détails
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-3 text-center py-12">
+            <i data-lucide="search" class="h-16 w-16 text-gray-300 mx-auto mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucun concours trouvé</h3>
+            <p class="text-gray-500">Essayez de modifier vos critères de recherche.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if concours_list.has_other_pages %}
+    <div class="flex justify-center mt-8">
+        <nav class="flex items-center space-x-2">
+            {% if concours_list.has_previous %}
+            <a href="?page={{ concours_list.previous_page_number }}&{{ request.GET.urlencode }}" 
+               class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                Précédent
+            </a>
+            {% endif %}
+            
+            <span class="px-3 py-2 text-sm font-medium text-gray-700">
+                Page {{ concours_list.number }} sur {{ concours_list.paginator.num_pages }}
+            </span>
+            
+            {% if concours_list.has_next %}
+            <a href="?page={{ concours_list.next_page_number }}&{{ request.GET.urlencode }}" 
+               class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                Suivant
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

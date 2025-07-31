@@ -1,0 +1,110 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Mon Profil - Etudes360{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="flex items-center mb-8">
+            <a href="{% url 'core:home' %}" class="flex items-center text-logo-green hover:text-logo-blue transition-colors mr-4">
+                <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
+                Retour à l'accueil
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title text-3xl">Mon Profil</h1>
+                <p class="card-description">Gérez vos informations personnelles</p>
+            </div>
+            <div class="card-content">
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" class="input w-full">
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
+                            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="input w-full">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" class="input w-full" readonly>
+                    </div>
+                    
+                    <div>
+                        <label for="telephone" class="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
+                        <input type="tel" id="telephone" name="telephone" value="{{ profile.telephone }}" class="input w-full">
+                    </div>
+                    
+                    <div>
+                        <label for="region" class="block text-sm font-medium text-gray-700 mb-2">Région</label>
+                        <select id="region" name="region" class="input w-full">
+                            <option value="">Sélectionnez une région</option>
+                            {% for region in regions %}
+                            <option value="{{ region.id }}" {% if profile.region.id == region.id %}selected{% endif %}>
+                                {{ region.nom }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="niveau_etudes" class="block text-sm font-medium text-gray-700 mb-2">Niveau d'études</label>
+                        <select id="niveau_etudes" name="niveau_etudes" class="input w-full">
+                            <option value="">Sélectionnez votre niveau</option>
+                            {% for value, display in profile.NIVEAUX_ETUDES %}
+                            <option value="{{ value }}" {% if profile.niveau_etudes == value %}selected{% endif %}>
+                                {{ display }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Domaines d'intérêt</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {% for category in categories %}
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="domaines_interet" value="{{ category.id }}" 
+                                       {% if category in profile.domaines_interet.all %}checked{% endif %}
+                                       class="rounded border-gray-300 text-logo-green focus:ring-logo-green">
+                                <span class="text-sm">{{ category.nom }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                        <textarea id="bio" name="bio" rows="4" class="input w-full" placeholder="Parlez-nous de vous...">{{ profile.bio }}</textarea>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4">
+                        <a href="{% url 'core:home' %}" class="btn btn-secondary">
+                            Annuler
+                        </a>
+                        <button type="submit" class="bg-logo-green text-logo-blue px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                            Sauvegarder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

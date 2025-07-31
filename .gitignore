@@ -1,0 +1,51 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Variables d'environnement
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.egg-info/
+dist/
+build/
+
+# Static files collectés
+staticfiles/
+
+# Node modules (si vous utilisez npm)
+node_modules/
+
+# Fichiers temporaires
+*.tmp
+*.temp
+
+# Logs ngrok
+ngrok.log
+
+# Fichiers de sauvegarde
+*.bak
+*.backup
+
+# Certificats SSL
+*.pem
+*.key
+*.crt

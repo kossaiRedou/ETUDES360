@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ bourse.titre }} - Etudes360{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{% url 'bourses:list' %}" class="flex items-center text-green-600 hover:text-green-700 transition-colors mr-4">
+            <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
+            Retour aux bourses
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ bourse.titre }}</h1>
+            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                <span class="badge {% if bourse.est_complete %}badge-default{% else %}badge-outline{% endif %}">
+                    {{ bourse.get_type_bourse_display }}
+                </span>
+                <span><i data-lucide="globe" class="h-4 w-4 inline mr-1"></i>{{ bourse.pays_destination.nom }}</span>
+                <span><i data-lucide="calendar" class="h-4 w-4 inline mr-1"></i>{{ bourse.deadline|date:"d F Y" }}</span>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="prose max-w-none">
+                <p>{{ bourse.description|linebreaks }}</p>
+                
+                <h3>Détails de la bourse</h3>
+                <p><strong>Montant:</strong> {{ bourse.montant }}</p>
+                <p><strong>Durée:</strong> {{ bourse.duree }}</p>
+                <p><strong>Niveau d'études:</strong> {{ bourse.get_niveau_display }}</p>
+                <p><strong>Nombre de places:</strong> {{ bourse.nombre_places }}</p>
+                <p><strong>Organisme:</strong> {{ bourse.organisme }}</p>
+                
+                <h3>Prérequis</h3>
+                <p>{{ bourse.prerequis|linebreaks }}</p>
+                
+                {% if bourse.est_ouverte %}
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+                    <p class="text-green-800 font-medium">
+                        <i data-lucide="clock" class="h-4 w-4 inline mr-1"></i>
+                        Cette bourse est ouverte - {{ bourse.jours_restants }} jours restants
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

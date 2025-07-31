@@ -1,0 +1,183 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Etudes360 - Votre portail vers l'excellence{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-20 px-4">
+    <div class="container mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            Démocratisons l'accès aux
+            <span class="text-green-600 block">opportunités éducatives</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Trouvez facilement des concours, formations et bourses en Guinée et à l'international. Une plateforme
+            gratuite pour tous les étudiants guinéens.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto mb-12">
+            <form method="GET" action="{% url 'core:home' %}" class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1 relative">
+                    <i data-lucide="search" class="absolute left-3 top-3 h-5 w-5 text-gray-400"></i>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="Rechercher des concours, formations, bourses..." 
+                        class="input pl-10 h-12 text-lg w-full"
+                        value="{{ request.GET.search }}"
+                    />
+                </div>
+                <button type="submit" class="bg-logo-green text-logo-blue h-12 px-8 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                    Rechercher
+                </button>
+            </form>
+        </div>
+
+        <!-- Quick Access Cards -->
+        <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <a href="{% url 'concours:list' %}" class="card hover:shadow-lg transition-shadow cursor-pointer group block text-decoration-none">
+                <div class="card-header text-center">
+                    <i data-lucide="award" class="h-12 w-12 text-blue-600 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="card-title text-xl">Concours</h3>
+                    <p class="card-description">Concours nationaux et internationaux pour tous les niveaux</p>
+                </div>
+            </a>
+
+            <a href="{% url 'formations:list' %}" class="card hover:shadow-lg transition-shadow cursor-pointer group block text-decoration-none">
+                <div class="card-header text-center">
+                    <i data-lucide="book-open" class="h-12 w-12 text-purple-600 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="card-title text-xl">Formations</h3>
+                    <p class="card-description">Formations gratuites et payantes, en ligne et en présentiel</p>
+                </div>
+            </a>
+
+            <a href="{% url 'bourses:list' %}" class="card hover:shadow-lg transition-shadow cursor-pointer group block text-decoration-none">
+                <div class="card-header text-center">
+                    <i data-lucide="globe" class="h-12 w-12 text-green-600 mx-auto mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="card-title text-xl">Bourses</h3>
+                    <p class="card-description">Bourses d'études en Guinée et à l'étranger</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Opportunities -->
+<section class="py-16 px-4 bg-white">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Opportunités récentes</h2>
+            <p class="text-gray-600">Découvrez les dernières opportunités ajoutées à notre plateforme</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            {% for opportunity in recent_opportunities %}
+            <div class="card hover:shadow-lg transition-shadow">
+                <div class="card-header">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="badge {% if opportunity.type == 'Concours' %}badge-default{% elif opportunity.type == 'Bourse' %}badge-secondary{% else %}badge-outline{% endif %}">
+                            {{ opportunity.type }}
+                        </span>
+                        <span class="text-sm text-red-600 font-medium">Échéance: {{ opportunity.deadline }}</span>
+                    </div>
+                    <h3 class="card-title text-lg">{{ opportunity.title }}</h3>
+                    <p class="card-description text-sm text-gray-600 mb-2">{{ opportunity.category }}</p>
+                </div>
+                <div class="card-content">
+                    <p class="text-gray-700 text-sm mb-4">{{ opportunity.description }}</p>
+                    <a href="{{ opportunity.url }}" class="btn btn-secondary w-full">
+                        Voir les détails
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-12">
+                <i data-lucide="search" class="h-16 w-16 text-gray-300 mx-auto mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucune opportunité disponible</h3>
+                <p class="text-gray-500">Les nouvelles opportunités apparaîtront ici dès qu'elles seront ajoutées.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-16 px-4 bg-gray-50">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Etudes360 en chiffres</h2>
+            <p class="text-gray-600">Notre impact sur l'éducation en Guinée</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="award" class="h-8 w-8 text-blue-600"></i>
+                </div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{ stats.total_concours }}</div>
+                <div class="text-gray-600">Concours disponibles</div>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="book-open" class="h-8 w-8 text-purple-600"></i>
+                </div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{ stats.total_formations }}</div>
+                <div class="text-gray-600">Formations proposées</div>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="globe" class="h-8 w-8 text-green-600"></i>
+                </div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{ stats.total_bourses }}</div>
+                <div class="text-gray-600">Bourses d'études</div>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="users" class="h-8 w-8 text-orange-600"></i>
+                </div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{ stats.total_users }}+</div>
+                <div class="text-gray-600">Utilisateurs inscrits</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-20 px-4 bg-logo-blue">
+    <div class="container mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-logo-white mb-6">
+            Prêt à saisir votre prochaine opportunité ?
+        </h2>
+        <p class="text-xl text-logo-green mb-8 max-w-2xl mx-auto">
+            Rejoignez des milliers d'étudiants guinéens qui ont déjà trouvé leur voie grâce à Etudes360 Guinée.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'core:register' %}" class="bg-logo-white text-logo-blue px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                Créer un compte gratuit
+            </a>
+            <a href="{% url 'core:login' %}" class="border-2 border-logo-white text-logo-white px-8 py-3 rounded-lg font-semibold hover:bg-logo-white hover:text-logo-blue transition-colors">
+                Se connecter
+            </a>
+            {% else %}
+            <a href="{% url 'core:profile' %}" class="bg-logo-white text-logo-blue px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors">
+                Mon profil
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Initialize icons after page load
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ formation.titre }} - Etudes360{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{% url 'formations:list' %}" class="flex items-center text-green-600 hover:text-green-700 transition-colors mr-4">
+            <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
+            Retour aux formations
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ formation.titre }}</h1>
+            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                <span class="badge {% if formation.est_gratuite %}badge-secondary{% else %}badge-outline{% endif %}">
+                    {{ formation.get_prix_display }}
+                </span>
+                <span><i data-lucide="clock" class="h-4 w-4 inline mr-1"></i>{{ formation.duree }}</span>
+                <span><i data-lucide="map-pin" class="h-4 w-4 inline mr-1"></i>{{ formation.localisation }}</span>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="prose max-w-none">
+                <p>{{ formation.description|linebreaks }}</p>
+                
+                <h3>Organisme: {{ formation.organisme }}</h3>
+                <p><strong>Date de début:</strong> {{ formation.date_debut|date:"d F Y" }}</p>
+                <p><strong>Type:</strong> {{ formation.get_type_formation_display }}</p>
+                <p><strong>Niveau:</strong> {{ formation.get_niveau_display }}</p>
+                
+                {% if formation.certificat_disponible %}
+                <p class="text-green-600"><i data-lucide="award" class="h-4 w-4 inline mr-1"></i>Certificat disponible</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

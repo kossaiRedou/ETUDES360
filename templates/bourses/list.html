@@ -1,0 +1,83 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Bourses - Etudes360{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Bourses d'études</h1>
+            <p class="text-gray-600">Trouvez des opportunités de financement pour vos études</p>
+        </div>
+        <a href="{% url 'core:home' %}" class="flex items-center text-green-600 hover:text-green-700 transition-colors">
+            <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
+            Retour à l'accueil
+        </a>
+    </div>
+
+    <!-- Search -->
+    <div class="bg-white p-6 rounded-lg shadow-sm border mb-8">
+        <form method="GET" class="flex gap-4">
+            <div class="flex-1">
+                <input 
+                    type="text" 
+                    name="search" 
+                    value="{{ search_term }}" 
+                    placeholder="Rechercher une bourse..."
+                    class="input w-full"
+                />
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i data-lucide="search" class="h-4 w-4 mr-2"></i>
+                Rechercher
+            </button>
+        </form>
+    </div>
+
+    <!-- Results -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for bourse in bourses_list %}
+        <div class="card hover:shadow-lg transition-shadow">
+            <div class="card-header">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="badge {% if bourse.est_complete %}badge-default{% else %}badge-outline{% endif %}">
+                        {{ bourse.get_type_bourse_display }}
+                    </span>
+                    <span class="text-sm {% if bourse.est_ouverte %}text-green-600{% else %}text-red-600{% endif %} font-medium">
+                        {% if bourse.est_ouverte %}Ouverte{% else %}Fermée{% endif %}
+                    </span>
+                </div>
+                <h3 class="card-title text-lg">{{ bourse.titre }}</h3>
+                <p class="card-description text-sm text-gray-600 mb-2">{{ bourse.pays_destination.nom }}</p>
+            </div>
+            <div class="card-content">
+                <p class="text-gray-700 text-sm mb-4">
+                    {{ bourse.description|truncatewords:20 }}
+                </p>
+                <div class="flex items-center justify-between text-sm text-gray-600 mb-4">
+                    <span><i data-lucide="calendar" class="h-4 w-4 inline mr-1"></i>{{ bourse.deadline|date:"d M Y" }}</span>
+                    <span><i data-lucide="users" class="h-4 w-4 inline mr-1"></i>{{ bourse.nombre_places }} places</span>
+                </div>
+                <a href="{% url 'bourses:detail' bourse.pk %}" class="btn btn-secondary w-full">
+                    Voir les détails
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-3 text-center py-12">
+            <i data-lucide="globe" class="h-16 w-16 text-gray-300 mx-auto mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucune bourse trouvée</h3>
+            <p class="text-gray-500">Essayez de modifier vos critères de recherche.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}
